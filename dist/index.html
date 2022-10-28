@@ -1,13 +1,17 @@
 <html>
   <head>
     <title>QuickAHP</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
     <script defer type="module" src="quickahp.mjs"></script>
   </head>
   <body>
     <h3>QuickAHP</h3>
     <div x-data="{ counter: 0 }">
-      <span x-text="counter"></span>
-      <button @click="counter++">+</button>
+      <div>
+        <span x-text="counter"></span>
+        <button @click="counter++">+</button>
+      </div>
+      <div x-text="$store.context"></div>
     </div>
   </body>
 </html>
