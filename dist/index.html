@@ -1,8 +1,13 @@
 <html>
-<head>
-<title>QuickAHP</title>
-</head>
-<body>
-<h3>QuickAHP</h3>
-</body>
+  <head>
+    <title>QuickAHP</title>
+    <script defer type="module" src="quickahp.mjs"></script>
+  </head>
+  <body>
+    <h3>QuickAHP</h3>
+    <div x-data="{ counter: 0 }">
+      <span x-text="counter"></span>
+      <button @click="counter++">+</button>
+    </div>
+  </body>
 </html>
