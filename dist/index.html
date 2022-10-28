@@ -11,7 +11,7 @@
         <span x-text="counter"></span>
         <button @click="counter++">+</button>
       </div>
-      <div x-text="$store.context"></div>
+      <div x-text="JSON.stringify($store.context)"></div>
     </div>
   </body>
 </html>
