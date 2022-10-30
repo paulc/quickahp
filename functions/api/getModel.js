@@ -6,7 +6,11 @@ export async function onRequest(context) {
         if (uuid === undefined) {
             throw new Error("Invalid request {uuid}")
         }
-        return new Response(JSON.stringify({result: await env.AHP.get(uuid)}), 
+        const data = await env.AHP.get(uuid)
+        if (data === undefined) {
+            throw new Error("UUID not found: " + uuid)
+        }
+        return new Response(JSON.stringify({result: await data}), 
             { headers: new Headers({
                 'Access-Control-Allow-Origin':'*', 
                 'Content-Type':'application/json'})
