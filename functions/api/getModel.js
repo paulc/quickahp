@@ -7,7 +7,7 @@ export async function onRequest(context) {
             throw new Error("Invalid request {uuid}")
         }
         const data = await env.AHP.get(uuid)
-        if (data === undefined) {
+        if (data === null) {
             throw new Error("UUID not found: " + uuid)
         }
         return new Response(JSON.stringify({result: await data}), 
