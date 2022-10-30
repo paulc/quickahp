@@ -1,9 +1,13 @@
 
 export async function onRequest(context) {
-    const { request } = context
+    const { request, env } = context
     try {
-        const data = await request.json()
-        return new Response(JSON.stringify(data), 
+        const { uuid, data } = await request.json()
+        if (uuid === undefined || data === undefined) {
+            throw new Error("Invalid input - uuid/data not found")
+        }
+        const result = await env.AHP.put(uuid,data)
+        return new Response(JSON.stringify({result:result}), 
             { headers: new Headers({
                 'Access-Control-Allow-Origin':'*', 
                 'Content-Type':'application/json'})
