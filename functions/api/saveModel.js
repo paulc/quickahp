@@ -9,7 +9,7 @@ export async function onRequest(context) {
                 'Content-Type':'application/json'})
         })
     } catch(e) {
-        return new Response(JSON.stringify({"error":e}), 
+        return new Response(JSON.stringify({"error":e.toString()}), 
             { headers: new Headers({
                 'Access-Control-Allow-Origin':'*', 
                 'Content-Type':'application/json'})
