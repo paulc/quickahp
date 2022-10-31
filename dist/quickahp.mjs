@@ -46,7 +46,7 @@ class Model {
       body: JSON.stringify({uuid: uuid, data: JSON.stringify(this)})
     }
     const response = await fetch("https://quickahp.pages.dev/api/saveModel", options).then((r) => r.json()).catch((e) => console.log(e))
-    console.log(uuid,response)
+    window.location.hash = uuid
   }
 }
 
