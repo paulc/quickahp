@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="favicon.png" />
     <script defer type="module" src="quickahp.mjs"></script>
   </head>
-  <body x-data="ahp">
+  <body x-data="state(window.location.hash)">
 
     <section class="section">
       <h1>AHP Model</h1>
@@ -84,9 +84,15 @@
               No Criteria
             </div>
           </div>
+          <div x-text="JSON.stringify(model.criteria)"></div>
           <template x-for="f in model.criteria" :key="f.id">
             <div class="card m-3">
-              <div class="card-header"><div class="card-header-title has-background-light" x-text="f.title"></div></div>
+              <div class="card-header">
+                <div class="card-header-title has-background-light level"> 
+                  <div class="level-left" x-text="f.title"></div>
+                  <div class="level-right"><button class="button is-small" x-on:click="ui.criteria_modal={show:true,title:f.title,text:f.text}">Edit</div>
+                </div>
+              </div>
               <div class="card-content" x-html="formatMarkdown(f.text)"></div>
             </div>
           </template>

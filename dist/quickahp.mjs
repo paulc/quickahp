@@ -9,10 +9,10 @@ class Field {
   title = ""
   text = ""
 
-  constructor({title="",text=""}) {
-    this.title = title
-    this.text = text
-    this.id = Field.index++
+  constructor({title,text,id}) {
+    this.title = title ?? ""
+    this.text = text ?? ""
+    this.id = id ?? Field.index++
   }
 }
 
@@ -55,8 +55,9 @@ class Model {
   }
 }
 
-Alpine.data('ahp',() => ({
+Alpine.data('state',(uuid) => ({
 
+  uuid: uuid.replace(/^#/,""),
   model: undefined,
   ui: { 
     criteria_modal: { show: false },
@@ -67,8 +68,24 @@ Alpine.data('ahp',() => ({
     return marked(text, { gfm:true })
   },
 
-  init() {
-    this.model = new Model()
+  async init() {
+    if (this.uuid === undefined) {
+      this.model = new Model()
+    } else {
+      this.model = new Model()
+      const options = {
+        method: "POST", 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({uuid: this.uuid})
+      }
+      const { result, error } = await fetch("https://quickahp.pages.dev/api/getModel",options).then(r => r.json()).catch(e => console.log(e))
+        if (result) {
+            console.log(JSON.parse(result))
+            this.model = Object.assign(new Model(), JSON.parse(result))
+        } else if (error) {
+            console.log("ERROR:",error)
+        }
+    }
   }
 
 }))
