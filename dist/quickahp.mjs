@@ -37,6 +37,17 @@ class Model {
   deleteAlternative(id) {
     this.alternatives = this.alternatives.filter((f) => f.id != id)
   }
+
+  async save() {
+    const uuid = crypto.randomUUID()
+    const options = {
+      method: "POST", 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({uuid: uuid, data: JSON.stringify(this)})
+    }
+    const response = await fetch("https://quickahp.pages.dev/api/saveModel", options).then(r => r.json())
+    console.log(uuid,response)
+  }
 }
 
 Alpine.data('ahp',() => ({
