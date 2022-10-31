@@ -9,9 +9,11 @@
     <script defer type="module" src="quickahp.mjs"></script>
   </head>
   <body x-data="ahp">
+
     <section class="section">
       <h1>AHP Model</h1>
-      <div class="column is-half">
+
+      <div class="">
         <div class="field">
           <label class="label">Title</label>
           <div class="control">
@@ -24,141 +26,139 @@
             <input class="input is-small" placeholder="Description" x-model="model.description">
           </div>
         </div>
-        <div class="m-3">
-          <button class="button" x-on:click="model.save()">Save</button>
-        </div>
       </div>
     </section>
-    <section class="section">
-      <div class="container">
+
+    <section class="section is-medium"> 
+      <div class="columns">
+        <!-- Criteria -->
         <div class="column is-half">
           <div class="level">
             <div class="level-left">
               <div class="level-item"><h3>Criteria:</h3></div>
             </div>
             <div class="level-right">
-              <div class="level-item"><button class="button is-small is-primary" x-on:click="model.addCriteria()">Add Criteria</button></div>
+              <div class="level-item"><button class="button is-small is-primary" x-on:click="ui.criteria_modal={show:true}">Add Criteria</button></div>
             </div>
           </div>
-        </div>
-        <div class="columns" x-show="model.criteria.length === 0">
-          <div class="column is-half message is-warning is-small m-3">
+          <!-- Modal -->
+          <div class="modal" x-bind:class="ui.criteria_modal.show && 'is-active'">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Criteria</p>
+                <button class="delete" aria-label="close" x-on:click="ui.criteria_modal.show = false"></button>
+              </header>
+              <section class="modal-card-body">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input is-small" placeholder="Title" x-model="ui.criteria_modal.title">
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="control">
+                        <textarea class="textarea is-small" placeholder="Text" x-model="ui.criteria_modal.text"></textarea>
+                      </div>
+                    </div>
+                    <div class="control">
+                      <label class="checkbox">
+                        <input type="checkbox" class="checkbox is-small" x-model="ui.criteria_modal.preview">
+                        <span class="is-size-7">Preview</span>
+                      </label>
+                    </div>
+                    <!-- XXX wrong styles ?? -->
+                    <div x-show="ui.criteria_modal.preview" x-html="formatMarkdown(ui.criteria_modal.text ?? '')"></div>
+                  </div>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-success is-small" x-on:click="model.addCriteria(ui.criteria_modal); ui.criteria_modal.show = false">Save</button>
+                <button class="button is-small" x-on:click="ui.criteria_modal.show = false">Cancel</button>
+              </footer>
+            </div>
+          </div>
+          <!-- List -->
+          <div class="message is-warning is-small m-3" x-show="model.criteria.length === 0">
             <div class="message-body">
               No Criteria
             </div>
           </div>
-        </div>
-        <template x-for="f in model.criteria" :key="f.id">
-          <div class="columns">
-            <div class="card column is-half m-3">
-              <div class="card-content">
-                <div class="field m-3">
-                  <div class="control">
-                    <input class="input is-small" placeholder="Title" x-model="f.title">
-                  </div>
-                </div>
-                <div class="field m-3">
-                  <div class="control">
-                    <textarea class="textarea is-small" placeholder="Text" x-model="f.text"></textarea>
-                  </div>
-                </div>
-                <div class="level">
-                  <div class="level-left">
-                    <div class="level-item m-3">
-                      <button class="button is-small is-warning">Edit</button>
-                    </div>
-                    <div class="level-item m-3">
-                      <button class="button is-small is-danger" x-on:click="model.deleteCriteria(f.id)">Delete</button>
-                    </div>
-                  </div>
-                  <div class="level-right">
-                    <div class="level-item field m-3">
-                      <div class="control">
-                        <label class="checkbox">
-                          <input type="checkbox" class="checkbox is-small" x-model="f.preview">
-                          <span class="is-size-7">Preview</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card column is-half m-3" x-show="f.preview">
+          <template x-for="f in model.criteria" :key="f.id">
+            <div class="card m-3">
               <div class="card-header"><div class="card-header-title has-background-light" x-text="f.title"></div></div>
               <div class="card-content" x-html="formatMarkdown(f.text)"></div>
             </div>
-          </div>
-        </template>
-      </div>
-    </section>
-    <section class="section">
-      <div class="container">
+          </template>
+        </div>
+        <!-- Alternatives -->
         <div class="column is-half">
           <div class="level">
             <div class="level-left">
               <div class="level-item"><h3>Alternatives:</h3></div>
             </div>
             <div class="level-right">
-              <div class="level-item"><button class="button is-small is-primary" x-on:click="model.addAlternative()">Add Alternative</button></div>
+              <div class="level-item"><button class="button is-small is-primary" x-on:click="ui.alternatives_modal={show:true}">Add Alternative</button></div>
             </div>
           </div>
-        </div>
-        <div class="columns" x-show="model.alternatives.length === 0">
-          <div class="column is-half message is-warning is-small m-3">
+          <!-- Modal -->
+          <div class="modal" x-bind:class="ui.alternatives_modal.show && 'is-active'">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Alternative</p>
+                <button class="delete" aria-label="close" x-on:click="ui.alternatives_modal.show = false"></button>
+              </header>
+              <section class="modal-card-body">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input is-small" placeholder="Title" x-model="ui.alternatives_modal.title">
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="control">
+                        <textarea class="textarea is-small" placeholder="Text" x-model="ui.alternatives_modal.text"></textarea>
+                      </div>
+                    </div>
+                    <div class="control">
+                      <label class="checkbox">
+                        <input type="checkbox" class="checkbox is-small" x-model="ui.alternatives_modal.preview">
+                        <span class="is-size-7">Preview</span>
+                      </label>
+                    </div>
+                    <!-- XXX wrong styles ?? -->
+                    <div x-show="ui.alternatives_modal.preview" x-html="formatMarkdown(ui.alternatives_modal.text ?? '')"></div>
+                  </div>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-success is-small" x-on:click="model.addAlternative(ui.alternatives_modal); ui.alternatives_modal.show = false">Save</button>
+                <button class="button is-small" x-on:click="ui.alternatives_modal.show = false">Cancel</button>
+              </footer>
+            </div>
+          </div>
+          <!-- List -->
+          <div class="message is-warning is-small m-3" x-show="model.alternatives.length === 0">
             <div class="message-body">
               No Alternatives
             </div>
           </div>
-        </div>
-        <template x-for="f in model.alternatives" :key="f.id">
-          <div class="columns">
-            <div class="card column is-half m-3">
-              <div class="card-content">
-                <div class="field m-3">
-                  <div class="control">
-                    <input class="input is-small" placeholder="Title" x-model="f.title">
-                  </div>
-                </div>
-                <div class="field m-3">
-                  <div class="control">
-                    <textarea class="textarea is-small" placeholder="Text" x-model="f.text"></textarea>
-                  </div>
-                </div>
-                <div class="level">
-                  <div class="level-left">
-                    <div class="level-item m-3">
-                      <button class="button is-small is-warning">Edit</button>
-                    </div>
-                    <div class="level-item m-3">
-                      <button class="button is-small is-danger" x-on:click="model.deleteAlternative(f.id)">Delete</button>
-                    </div>
-                  </div>
-                  <div class="level-right">
-                    <div class="level-item field m-3">
-                      <div class="control">
-                        <label class="checkbox">
-                          <input type="checkbox" class="checkbox is-small" x-model="f.preview">
-                          <span class="is-size-7">Preview</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card column is-half m-3" x-show="f.preview">
+          <template x-for="f in model.alternatives" :key="f.id">
+            <div class="card m-3">
               <div class="card-header"><div class="card-header-title has-background-light" x-text="f.title"></div></div>
               <div class="card-content" x-html="formatMarkdown(f.text)"></div>
             </div>
-          </div>
-        </template>
+          </template>
+        </div>
       </div>
     </section>
+
     <section>
       <h3>Model</h3>
       <pre x-text="JSON.stringify(model,0,2)"></pre>
     </section>
+
   </body>
 </html>
 

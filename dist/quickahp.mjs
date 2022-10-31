@@ -8,30 +8,34 @@ class Field {
 
   title = ""
   text = ""
-  preview = false
 
-  constructor() {
+  constructor({title="",text=""}) {
+    this.title = title
+    this.text = text
     this.id = Field.index++
   }
 }
 
 class Model {
 
+  uuid = undefined
   name = ""
   description = ""
   criteria = []
   alternatives = []
 
-  addCriteria() {
-    this.criteria.push(new Field())
+  async addCriteria(obj = {}) {
+    this.criteria.push(new Field(obj))
+    this.save()
   }
 
   deleteCriteria(id) {
     this.criteria = this.criteria.filter((f) => f.id != id)
   }
 
-  addAlternative() {
-    this.alternatives.push(new Field())
+  async addAlternative(obj = {}) {
+    this.alternatives.push(new Field(obj))
+    this.save()
   }
 
   deleteAlternative(id) {
@@ -39,20 +43,25 @@ class Model {
   }
 
   async save() {
-    const uuid = crypto.randomUUID()
+    this.uuid = this.uuid ?? crypto.randomUUID()
     const options = {
       method: "POST", 
       headers: { 'Content-Type': 'application/json' }, 
-      body: JSON.stringify({uuid: uuid, data: JSON.stringify(this)})
+      body: JSON.stringify({uuid: this.uuid, data: JSON.stringify(this)})
     }
     const response = await fetch("https://quickahp.pages.dev/api/saveModel", options).then((r) => r.json()).catch((e) => console.log(e))
-    window.location.hash = uuid
+    console.log(this.uuid,response)
+    window.location.hash = this.uuid
   }
 }
 
 Alpine.data('ahp',() => ({
 
   model: undefined,
+  ui: { 
+    criteria_modal: { show: false },
+    alternatives_modal: { show: false }
+  },
 
   formatMarkdown(text) {
     return marked(text, { gfm:true })
